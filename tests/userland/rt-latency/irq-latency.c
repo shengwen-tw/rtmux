@@ -213,8 +213,13 @@ int main(int argc, char **argv)
      */
     {
         unsigned addint[2] = {RTMUX_TRACE_ADDCLASS, RTMUX_TRACE_INT};
+        int rc;
 
-        if (trace_event(addint) == -1 || trace_cmd(RTMUX_TRACE_START) == -1) {
+        /* Disable all trace classes left enabled by earlier probes. */
+        rc = trace_cmd(RTMUX_TRACE_DELALLCLASSES);
+
+        if (rc == -1 || trace_event(addint) == -1 ||
+            trace_cmd(RTMUX_TRACE_START) == -1) {
             printf("irq-latency: FAIL start tracing: %s\n", strerror(errno));
             return 1;
         }
